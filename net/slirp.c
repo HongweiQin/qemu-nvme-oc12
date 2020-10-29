@@ -466,7 +466,8 @@ static void slirp_smb_cleanup(SlirpState *s)
     int ret;
 
     if (s->smb_dir[0] != '\0') {
-        snprintf(cmd, sizeof(cmd), "rm -rf %s", s->smb_dir);
+        if(snprintf(cmd, sizeof(cmd), "rm -rf %s", s->smb_dir) < 0)
+		abort();
         ret = system(cmd);
         if (ret == -1 || !WIFEXITED(ret)) {
             error_report("'%s' failed.", cmd);
@@ -511,7 +512,8 @@ static int slirp_smb(SlirpState* s, const char *exported_dir,
         error_report("could not create samba server dir '%s'", s->smb_dir);
         return -1;
     }
-    snprintf(smb_conf, sizeof(smb_conf), "%s/%s", s->smb_dir, "smb.conf");
+    if(0 > snprintf(smb_conf, sizeof(smb_conf), "%s/%s", s->smb_dir, "smb.conf"))
+	    abort();
 
     f = fopen(smb_conf, "w");
     if (!f) {

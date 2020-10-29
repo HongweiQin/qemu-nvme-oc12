@@ -1151,7 +1151,8 @@ build_ssdt(GArray *table_data, GArray *linker,
                 char id[3];
                 uint8_t *mem = acpi_data_push(sb_scope, ACPI_MEM_SIZEOF);
 
-                snprintf(id, sizeof(id), "%02X", i);
+                if(0 > snprintf(id, sizeof(id), "%02X", i))
+			abort();
                 memcpy(mem, ACPI_MEM_AML, ACPI_MEM_SIZEOF);
                 memcpy(mem + ACPI_MEM_OFFSET_HEX, id, 2);
                 memcpy(mem + ACPI_MEM_OFFSET_ID, id, 2);
